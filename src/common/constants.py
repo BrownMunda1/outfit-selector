@@ -1,0 +1,3 @@
+MONGO_URI = "mongodb://localhost:27017/"
+MONGO_DATABASE_NAME = "OUTFIT_SELECTOR"
+IMAGE_COLLECTION_NAME = "outfits_images"
