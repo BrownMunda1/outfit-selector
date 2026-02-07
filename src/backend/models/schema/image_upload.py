@@ -3,6 +3,10 @@ from pydantic.alias_generators import to_camel
 
 class ImageUpload(BaseModel):
 
+    image_file_name: str = Field(
+        description="The name of the uploaded file"
+    )
+
     image_data: bytes = Field(
         description="Image data in bytes"
     )

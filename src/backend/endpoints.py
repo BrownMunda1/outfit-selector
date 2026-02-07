@@ -1,7 +1,9 @@
+from bson.binary import Binary
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRouter
-from fastapi import UploadFile, Depends
+from fastapi import Depends
+from fastapi.datastructures import UploadFile
 from pymongo.asynchronous.collection import AsyncCollection
 
 from integration.dependencies.mongo import get_collection
@@ -12,17 +14,18 @@ from backend.models.response.api_response import APIResponse
 image_router = APIRouter(prefix="/image")
 
 @image_router.post(path="/upload")
-async def upload_image_to_db(image: UploadFile, request: Request, collection: AsyncCollection = Depends(get_collection)):
+async def upload_image_to_db(images: list[UploadFile], request: Request, collection: AsyncCollection = Depends(get_collection)):
 
-    image_bytes = await image.read()
-    content_type = request.headers.get("content-type")
+    image_upload_data = [
+        ImageUpload(
+            image_file_name=image.filename,
+            image_data=Binary(data=await image.read()),
+            content_type=image.content_type,
+        ) for image in images
+    ]
 
-    image_upload_data = ImageUpload(
-        image_data=image_bytes,
-        content_type=content_type
-    )
     try:
-        result = await ImageUploadRepository.insert_one(collection=collection, data=image_upload_data)
+        result = await ImageUploadRepository.insert_many(collection=collection, data=image_upload_data)
 
         return JSONResponse(
             content=APIResponse(

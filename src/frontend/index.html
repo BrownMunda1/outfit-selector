@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outfit Selector</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <div style="width: 100%; display: flex; flex-direction: column;">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="upload">📤 Upload Outfits</button>
+                <button class="tab-button" data-tab="chat">💬 Chat Assistant</button>
+            </div>
+
+            <!-- Upload Tab -->
+            <div id="upload" class="tab-content active">
+                <div class="upload-section">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">👔</div>
+                        <h3>Upload Your Outfit</h3>
+                        <p>Drag and drop your outfit images here or click to browse</p>
+                        <button class="upload-btn">Choose Files</button>
+                        <input type="file" id="fileInput" class="file-input" accept="image/*" multiple>
+                    </div>
+                    <div class="image-grid" id="imageGrid"></div>
+                    <button class="upload-outfit-btn" id="uploadOutfitBtn" disabled>Upload Outfits</button>
+                </div>
+            </div>
+
+            <!-- Chat Tab -->
+            <div id="chat" class="tab-content">
+                <div class="messages-container" id="messagesContainer">
+                    <div class="empty-chat">Start a conversation by typing a message below...</div>
+                </div>
+                <div class="chat-input-area">
+                    <input
+                        type="text"
+                        class="chat-input"
+                        id="chatInput"
+                        placeholder="Type your message here..."
+                        autocomplete="off"
+                    >
+                    <button class="send-btn" id="sendBtn">➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
