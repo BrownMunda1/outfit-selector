@@ -3,7 +3,7 @@ from pymongo.results import InsertOneResult, InsertManyResult
 
 from backend.models.schema import ImageUpload
 
-class ImageUploadRepository:
+class ImageRepository:
 
     @classmethod
     async def insert_one(cls, collection: AsyncCollection, data: ImageUpload) -> InsertOneResult:
@@ -18,8 +18,8 @@ class ImageUploadRepository:
         return result
 
     @classmethod
-    async def find(cls, collection: AsyncCollection):
-        result = await collection.find()
+    async def find_all(cls, collection: AsyncCollection):
+        result = collection.find({})
         return result
 
 __all__ = [

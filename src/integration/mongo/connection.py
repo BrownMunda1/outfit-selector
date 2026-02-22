@@ -27,12 +27,10 @@ class AsyncMongoConnection:
 
     async def get_collection(self, collection_name: str = "", create: bool = True) -> Optional[AsyncCollection]:
         try:
-            print("HERE1")
             collection = self.database.get_collection(collection_name)
 
             if collection is None:
                 if create:
-                    print("HEERERERERE")
                     try:
                         collection = await self.database.create_collection(name=collection_name)
                     except Exception as e:
