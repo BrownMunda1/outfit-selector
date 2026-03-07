@@ -8,8 +8,13 @@ dependencies = [
     "fastapi[standard]",
     "python-multipart",
     "pymongo",
-    "langgraph",
-    "langgraph-cli[inmem]",
+    # "langgraph",
+    # "langgraph-cli[inmem]",
+    # "langchain-qdrant",
+    "langchain",
+    "transformers",
+    "torch",
+    "Pillow",
 ]
 
 [build-system]

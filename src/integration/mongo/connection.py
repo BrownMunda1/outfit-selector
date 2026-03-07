@@ -1,12 +1,28 @@
 from typing import Optional
+from threading import Lock
 
 from pymongo import AsyncMongoClient
 from pymongo.asynchronous.database import AsyncDatabase
 from pymongo.asynchronous.collection import AsyncCollection
 
 class AsyncMongoConnection:
-    def __init__(self, uri):
+
+    _lock = Lock()
+    _instance = None
+
+    def __new__(cls, uri):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls, uri)
+        return cls._instance
+
+
+    def __init__(self, uri: str = None):
+        if not hasattr(self, "_initialized"):
+            self._initialized = False
         self.uri = uri
+        self._initialized = True
 
     async def connect(self, database: Optional[str] = None) -> Optional["AsyncMongoConnection"]:
         try:

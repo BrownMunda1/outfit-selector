@@ -10,10 +10,11 @@ from backend.endpoints import image_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.mongo = AsyncMongoConnection(uri=MONGO_URI)
-    app.state.mongo_db = await app.state.mongo.connect(database=MONGO_DATABASE_NAME)
+    mongodb_client = AsyncMongoConnection(uri=MONGO_URI)
+    database = await mongodb_client.connect(database=MONGO_DATABASE_NAME)
+    app.state.mongo_db = database
     yield
-    await app.state.mongo.disconnect()
+    await mongodb_client.disconnect()
 
 app = FastAPI(lifespan=lifespan)
 
