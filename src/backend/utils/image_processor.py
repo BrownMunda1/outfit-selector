@@ -7,7 +7,7 @@ from transformers import CLIPProcessor, CLIPModel
 from langchain.messages import HumanMessage
 from fastapi.datastructures import UploadFile
 
-from utils.llm import LLM
+from backend.utils.llm import LLM
 from common.constants import IMAGE_COLLECTION_NAME
 from integration.mongo.connection import AsyncMongoConnection
 from integration.mongo.repository import ImageRepository

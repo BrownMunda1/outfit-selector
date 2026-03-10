@@ -11,7 +11,7 @@ from __future__ import annotations
 from integration.mongo.repository import ImageRepository
 from integration.mongo.connection import AsyncMongoConnection
 from common.constants import IMAGE_COLLECTION_NAME
-from utils.llm import LLM
+from backend.utils.llm import LLM
 
 # graph = StateGraph()
 

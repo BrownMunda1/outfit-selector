@@ -8,12 +8,12 @@ from fastapi import Depends
 from fastapi.datastructures import UploadFile
 from pymongo.asynchronous.collection import AsyncCollection
 
-from utils.image_processor import ImageProcessor
+from backend.utils.image_processor import ImageProcessor
 from integration.dependencies.mongo import get_collection
 from integration.mongo.repository import ImageRepository
 from backend.models.schema import ImageUpload
 from backend.models.response.api_response import APIResponse
-from chatbot.outfit_advisor import chat_response
+from backend.chatbot.outfit_advisor import chat_response
 
 image_router = APIRouter(prefix="/image")
 
@@ -80,7 +80,7 @@ async def upload_image_to_db(images: list[UploadFile], request: Request, collect
 #             status_code=500
 #         )
 
-chat_router = APIRouter("/chat")
+chat_router = APIRouter(prefix="/chat")
 @chat_router.get("/{message}")
 def chat(message: str):
 
