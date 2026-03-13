@@ -24,80 +24,87 @@ const uploadOutfitBtn = document.getElementById('uploadOutfitBtn');
 
 const uploadButton = document.querySelector('.upload-btn');
 uploadButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    console.log("upload button click");
     fileInput.click();
 });
 
 let uploadedImages = []; // Store uploaded images
 
 // Click to browse
-uploadArea.addEventListener('click', () => fileInput.click());
+uploadArea.addEventListener('click', (e) =>{
+    fileInput.click();
+});
 
 // Handle file selection from input
 fileInput.addEventListener('change', (e) => {
-  handleFiles(e.target.files);
+    e.preventDefault();
+    console.log("file input change");
+    handleFiles(e.target.files);
 });
 
 // Drag and drop
 uploadArea.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  uploadArea.style.borderColor = '#667eea';
-  uploadArea.style.backgroundColor = 'rgba(102, 126, 234, 0.1)';
+    e.preventDefault();
+    uploadArea.style.borderColor = '#667eea';
+    uploadArea.style.backgroundColor = 'rgba(102, 126, 234, 0.1)';
 });
 
 uploadArea.addEventListener('dragleave', () => {
-  uploadArea.style.borderColor = '#ddd';
-  uploadArea.style.backgroundColor = 'transparent';
+    uploadArea.style.borderColor = '#ddd';
+    uploadArea.style.backgroundColor = 'transparent';
 });
 
 uploadArea.addEventListener('drop', (e) => {
-  e.preventDefault();
-  uploadArea.style.borderColor = '#ddd';
-  uploadArea.style.backgroundColor = 'transparent';
-  handleFiles(e.dataTransfer.files);
+    e.preventDefault();
+    uploadArea.style.borderColor = '#ddd';
+    uploadArea.style.backgroundColor = 'transparent';
+    handleFiles(e.dataTransfer.files);
 });
 
 // Process uploaded files
 function handleFiles(files) {
-  Array.from(files).forEach(file => {
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        uploadedImages.push({
-          name: file.name,
-          data: e.target.result
-        });
-        displayImages();
-        updateButtonState();
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+    console.log("enter handlefiles: " + files[0].name);
+    Array.from(files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadedImages.push({
+                    name: file.name,
+                    data: e.target.result
+                });
+                displayImages();
+                updateButtonState();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 }
 
 // Display images in grid
 function displayImages() {
-  imageGrid.innerHTML = '';
-  uploadedImages.forEach((img, index) => {
-    const imageItem = document.createElement('div');
-    imageItem.className = 'image-item';
-    imageItem.innerHTML = `
+    imageGrid.innerHTML = '';
+    uploadedImages.forEach((img, index) => {
+        const imageItem = document.createElement('div');
+        imageItem.className = 'image-item';
+        imageItem.innerHTML = `
       <img src="${img.data}" alt="${img.name}">
       <button class="remove-btn" onclick="removeImage(${index})">✕</button>
     `;
-    imageGrid.appendChild(imageItem);
-  });
+        imageGrid.appendChild(imageItem);
+    });
 }
 
 // Remove image from uploads
 function removeImage(index) {
-  uploadedImages.splice(index, 1);
-  displayImages();
-  updateButtonState();
+    uploadedImages.splice(index, 1);
+    displayImages();
+    updateButtonState();
 }
 
 // Enable/disable button based on uploads
 function updateButtonState() {
-  uploadOutfitBtn.disabled = uploadedImages.length === 0;
+    uploadOutfitBtn.disabled = uploadedImages.length === 0;
 }
 
 // Handle button click
@@ -114,18 +121,18 @@ async function sendImagesToBackend() {
 
         // Add all images to FormData
         uploadedImages.forEach((img, index) => {
-        // Convert base64 to blob
-        const blob = base64ToBlob(img.data);
-        formData.append('images', blob, img.name);
+            // Convert base64 to blob
+            const blob = base64ToBlob(img.data);
+            formData.append('images', blob, img.name);
         });
 
         const response = await fetch('/image/upload', {
-        method: 'POST',
-        body: formData
+            method: 'POST',
+            body: formData
         });
 
         if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
+            throw new Error(`Server error: ${response.status}`);
         }
 
         const result = await response.json();

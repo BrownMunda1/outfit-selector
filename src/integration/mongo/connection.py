@@ -39,7 +39,7 @@ class AsyncMongoConnection:
 
     async def disconnect(self):
         if self.client:
-            self.client.close()
+            await self.client.close()
 
     async def get_collection(self, collection_name: str = "", create: bool = True) -> Optional[AsyncCollection]:
         try:
