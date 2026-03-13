@@ -10,11 +10,11 @@ class AsyncMongoConnection:
     _lock = Lock()
     _instance = None
 
-    def __new__(cls, uri):
+    def __new__(cls, uri: str = None):
         if cls._instance is None:
             with cls._lock:
                 if cls._instance is None:
-                    cls._instance = super().__new__(cls, uri)
+                    cls._instance = super().__new__(cls)
         return cls._instance
 
 
