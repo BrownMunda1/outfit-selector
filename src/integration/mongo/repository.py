@@ -19,7 +19,8 @@ class ImageRepository:
 
     @classmethod
     async def find_all(cls, collection: AsyncCollection):
-        result = collection.find({})
+        cursor = collection.find({})
+        result = await cursor.to_list(length=None)
         return result
 
 __all__ = [

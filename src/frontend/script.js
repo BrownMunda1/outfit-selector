@@ -25,7 +25,6 @@ const uploadOutfitBtn = document.getElementById('uploadOutfitBtn');
 const uploadButton = document.querySelector('.upload-btn');
 uploadButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    console.log("upload button click");
     fileInput.click();
 });
 
@@ -39,7 +38,6 @@ uploadArea.addEventListener('click', (e) =>{
 // Handle file selection from input
 fileInput.addEventListener('change', (e) => {
     e.preventDefault();
-    console.log("file input change");
     handleFiles(e.target.files);
 });
 
@@ -64,7 +62,6 @@ uploadArea.addEventListener('drop', (e) => {
 
 // Process uploaded files
 function handleFiles(files) {
-    console.log("enter handlefiles: " + files[0].name);
     Array.from(files).forEach(file => {
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
@@ -197,7 +194,14 @@ chatInput.addEventListener('keypress', (e) => {
     }
 });
 
-function sendMessage() {
+// function sendInitialChatMessage() {
+//     const assistantMessageDiv = document.createElement('div');
+//     assistantMessageDiv.className = 'message assistant';
+//     assistantMessageDiv.innerHTML = `<div class="message-content">I'm here to help you with your outfit selection! How can I assist you today?</div>`;
+//     messagesContainer.appendChild(assistantMessageDiv);
+// }
+
+async function sendMessage() {
     const message = chatInput.value.trim();
     if (!message) return;
 
@@ -215,25 +219,29 @@ function sendMessage() {
 
     messages.push({ role: 'user', content: message });
     chatInput.value = '';
+    const response = await fetch(`/chat/${encodeURIComponent(message)}`, {
+        method: 'GET'
+    });
 
-    // Simulate assistant response
-    setTimeout(() => {
-        const assistantMessageDiv = document.createElement('div');
-        assistantMessageDiv.className = 'message assistant';
-        assistantMessageDiv.innerHTML = `<div class="message-content">I'm here to help you with your outfit selection! How can I assist you today?</div>`;
-        messagesContainer.appendChild(assistantMessageDiv);
+    if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+    }
 
-        messages.push({
-            role: 'assistant',
-            content: "I'm here to help you with your outfit selection! How can I assist you today?"
-        });
+    let response_json = await response.json();
+    console.log("Success:", response_json);
+    let llmResponse = response_json["data"]["content"];
+    messages.push({
+        role: 'assistant',
+        content: llmResponse
+    });
 
-        // Auto-scroll to bottom
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }, 500);
+    const assistantMessageDiv = document.createElement('div');
+    assistantMessageDiv.className = 'message assistant';
+    assistantMessageDiv.innerHTML = `<div class="message-content">${llmResponse}</div>`;
+    messagesContainer.appendChild(assistantMessageDiv);
 
-    // Auto-scroll to bottom
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
 }
 
 function escapeHtml(text) {

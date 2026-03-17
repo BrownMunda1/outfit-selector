@@ -14,7 +14,7 @@ from integration.mongo.repository import ImageRepository
 class ImageProcessor:
 
     def __init__(self):
-        load_dotenv()
+        pass
 
     async def process_images(self, images: list[UploadFile]):
         images_data: list = []
@@ -58,4 +58,3 @@ class ImageProcessor:
         })
 
         return HumanMessage(content=content)
-
