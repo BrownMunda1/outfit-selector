@@ -52,7 +52,7 @@ async def upload_image_to_db(images: list[UploadFile], request: Request, collect
         return JSONResponse(
             content=APIResponse(
                 message=f"Unexpected error while inserting into collection '{collection.name}'",
-                errors=list(e)
+                errors=[f"Error: {e}"]
             ).model_dump(by_alias=True),
             status_code=500
         )

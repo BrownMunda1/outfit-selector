@@ -3,7 +3,6 @@ import base64
 
 from dotenv import load_dotenv
 from PIL import Image
-from transformers import CLIPProcessor, CLIPModel
 from langchain.messages import HumanMessage
 from fastapi.datastructures import UploadFile
 
@@ -16,15 +15,12 @@ class ImageProcessor:
 
     def __init__(self):
         load_dotenv()
-        self.clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-        self.clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-        self.clip_model.eval()
 
     async def process_images(self, images: list[UploadFile]):
         images_data: list = []
         for image in images:
             image_data = await image.read()
-            image_data = self.process_image(image=image)
+            image_data = self.process_image(image=image_data)
             images_data.append(image_data)
 
         # Push to mongodb
@@ -35,10 +31,9 @@ class ImageProcessor:
         return result
 
     def process_image(self, image: bytes):
-
         image_base64 = self._convert_image_to_base64(image=image)
         llm_prompt = self._prepare_content_for_llm_prompt(image_base64=image_base64)
-        response = LLM.invoke(messages=[llm_prompt])
+        response = LLM().invoke(messages=[llm_prompt])
         return response
 
     def _convert_image_to_base64(self, image: bytes):

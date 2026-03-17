@@ -4,10 +4,13 @@ from backend.models.schema import ImageUpload
 
 class LLM:
     def __init__(self):
-        self.llm = init_chat_model("openai:gpt-4.1").with_structured_output(ImageUpload)
+        self.llm = init_chat_model("openai:gpt-4.1")
+        self.llm = self.llm.with_structured_output(ImageUpload)
         pass
 
     def invoke(self, messages: list[dict]):
-
-        response = self.llm.invoke(messages)
-        return response
+        try:
+            response = self.llm.invoke(messages)
+            return response
+        except Exception as e:
+            raise Exception(f"Error in LLM Call: {e}")

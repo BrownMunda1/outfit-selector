@@ -12,8 +12,7 @@ dependencies = [
     # "langgraph-cli[inmem]",
     # "langchain-qdrant",
     "langchain",
-    "transformers",
-    "torch",
+    "langchain-openai",
     "Pillow",
 ]
 
