@@ -146,7 +146,7 @@ async function sendImagesToBackend() {
         alert('Failed to upload images. Check console for details.');
     } finally {
         uploadOutfitBtn.disabled = uploadedImages.length === 0;
-        uploadOutfitBtn.textContent = 'Get Outfit Recommendations';
+        // uploadOutfitBtn.textContent = 'Get Outfit Recommendations';
     }
 }
 

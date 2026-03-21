@@ -3,18 +3,6 @@ from pydantic.alias_generators import to_camel
 
 class ImageUpload(BaseModel):
 
-    # image_file_name: str = Field(
-    #     description="The name of the uploaded file"
-    # )
-
-    # image_data: bytes = Field(
-    #     description="Image data in bytes"
-    # )
-
-    # content_type: str = Field(
-    #     description="Content-Type field from the request"
-    # )
-
     top: str = Field(
         description="A short 3-4 word description of the clothing above the waist line. Capture the colour and the garment type. If there is no clarity, set the value as 'None'.",
         default=None

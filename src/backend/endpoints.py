@@ -18,26 +18,13 @@ image_router = APIRouter(prefix="/image")
 @image_router.post(path="/upload")
 async def upload_image_to_db(images: list[UploadFile], request: Request, collection: AsyncCollection = Depends(get_collection)):
 
-    # image_upload_data = []
-    # for image in images:
-    #     image_data = await image.read()
-        # image_data_encoded = base64.b64encode(image_data)
-
-        # image_upload_data.append(
-        #     ImageUpload(
-        #         image_file_name=image.filename,
-        #         image_data=image_data_encoded,
-        #         content_type=image.content_type,
-        #     )
-        # )
-
-
-        # Transform the incoming image using CLIP Processor. Give its information to LLM, response should know the type (topwear, bottomwear), color, texture if possible, what vibe does it give. Store embeddings + the metadata in qdrant database which should be initialized at app startup - DONE!
+    """
+    What this does: Transform the incoming image using CLIP Processor. Give its information to LLM, response should know the type (topwear, bottomwear), color, texture if possible, what vibe does it give. Store embeddings + the metadata in qdrant database which should be initialized at app startup
+    """
 
     try:
         image_processor = ImageProcessor()
         await image_processor.process_images(images=images)
-        # result = await ImageRepository.insert_many(collection=collection, data=image_upload_data)
 
         return JSONResponse(
             content=APIResponse(
@@ -55,35 +42,14 @@ async def upload_image_to_db(images: list[UploadFile], request: Request, collect
             status_code=500
         )
 
-# @image_router.get("/all")
-# async def get_all_images(request: Request, collection: AsyncCollection = Depends(get_collection)):
-
-#     try:
-#         result = await ImageRepository.find_all(collection=collection)
-
-#         all_images: list[dict] = []
-
-#         async for document in result:
-#             doc: dict = document
-#             doc.pop("_id")
-#             all_images.append(doc)
-
-#         return all_images
-#     except Exception as e:
-#         return JSONResponse(
-#             content=APIResponse(
-#                 message=f"Unexpected error while fetching images from collection '{collection.name}'",
-#                 errors=list(e)
-#             ).model_dump(by_alias=True),
-#             status_code=500
-#         )
 
 chat_router = APIRouter(prefix="/chat")
 @chat_router.get("/{message}")
 async def chat(message: str):
 
-    # response = await chat_response(user_query=message)
-    # return response
+    """
+    What does this do: Takes user message and passes it to LLM for response.
+    """
 
     try:
         response = await chat_response(user_query=message)

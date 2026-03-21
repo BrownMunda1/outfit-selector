@@ -1,12 +1,18 @@
 from __future__ import annotations
 
+## Future scope: Enhance the chatbot part
 # __all__ = [
 #     "graph"
 # ]
 
 # from typing import TypedDict, Annotated
-
 # from langgraph.graph import StateGraph, add_messages
+
+# graph = StateGraph()
+
+# class ChatState(TypedDict):
+#     image_data: list
+#     messages: Annotated[str, add_messages]
 
 from langchain_core.messages import AIMessage
 
@@ -14,12 +20,6 @@ from integration.mongo.repository import ImageRepository
 from integration.mongo.connection import AsyncMongoConnection
 from common.constants import IMAGE_COLLECTION_NAME
 from backend.utils.llm import LLM
-
-# graph = StateGraph()
-
-# class ChatState(TypedDict):
-#     image_data: list
-#     messages: Annotated[str, add_messages]
 
 async def init() -> dict:
 
@@ -30,7 +30,6 @@ async def init() -> dict:
 
     extracted_images_data = []
     for document in all_images_data:
-        print("here")
         doc: dict = document
         doc.pop("_id")
         extracted_images_data.append(doc)

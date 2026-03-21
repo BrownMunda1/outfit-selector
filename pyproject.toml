@@ -10,7 +10,6 @@ dependencies = [
     "pymongo",
     # "langgraph",
     # "langgraph-cli[inmem]",
-    # "langchain-qdrant",
     "langchain",
     "langchain-openai",
     "Pillow",
