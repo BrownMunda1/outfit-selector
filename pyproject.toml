@@ -6,13 +6,15 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]",
-    "python-multipart",
+    # "python-multipart",
     "pymongo",
     # "langgraph",
     # "langgraph-cli[inmem]",
     "langchain",
     "langchain-openai",
     "Pillow",
+    "pyjwt[crypto]",
+    "pwdlib[argon2]",
 ]
 
 [build-system]

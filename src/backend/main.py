@@ -9,6 +9,7 @@ from integration.mongo.connection import AsyncMongoConnection
 from common.constants import MONGO_URI, MONGO_DATABASE_NAME
 from backend.endpoints import image_router
 from backend.endpoints import chat_router
+from backend.auth import auth_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -23,6 +24,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(router=image_router)
 app.include_router(chat_router)
+app.include_router(auth_router)
 
 # Serve static files
 app.mount("/", StaticFiles(directory="frontend", html=True), name="static")

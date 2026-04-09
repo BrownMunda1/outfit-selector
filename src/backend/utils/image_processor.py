@@ -9,7 +9,7 @@ from fastapi.datastructures import UploadFile
 from backend.utils.llm import LLM
 from common.constants import IMAGE_COLLECTION_NAME
 from integration.mongo.connection import AsyncMongoConnection
-from integration.mongo.repository import ImageRepository
+from integration.mongo.repository import GenericRepository
 
 class ImageProcessor:
 
@@ -26,7 +26,7 @@ class ImageProcessor:
         # Push to mongodb
         collection = await AsyncMongoConnection().get_collection(collection_name=IMAGE_COLLECTION_NAME)
 
-        result = await ImageRepository.insert_many(collection=collection, data = images_data)
+        result = await GenericRepository.insert_many(collection=collection, data = images_data)
 
         return result
 

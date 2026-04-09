@@ -3,6 +3,10 @@ from pydantic.alias_generators import to_camel
 
 class ImageUpload(BaseModel):
 
+    username: str = Field(
+        description="The foreign key from the 'users' collection for identifying the users"
+    )
+
     top: str = Field(
         description="A short 3-4 word description of the clothing above the waist line. Capture the colour and the garment type. If there is no clarity, set the value as 'None'.",
         default=None

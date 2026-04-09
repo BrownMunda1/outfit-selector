@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from langchain_core.messages import AIMessage
 
-from integration.mongo.repository import ImageRepository
+from integration.mongo.repository import GenericRepository
 from integration.mongo.connection import AsyncMongoConnection
 from common.constants import IMAGE_COLLECTION_NAME
 from backend.utils.llm import LLM
@@ -26,7 +26,7 @@ async def init() -> dict:
 
     collection = await AsyncMongoConnection().get_collection(collection_name=IMAGE_COLLECTION_NAME)
 
-    all_images_data = await ImageRepository.find_all(collection=collection)
+    all_images_data = await GenericRepository.find_all(collection=collection)
 
     extracted_images_data = []
     for document in all_images_data:
