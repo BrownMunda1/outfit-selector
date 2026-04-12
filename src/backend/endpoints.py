@@ -29,7 +29,7 @@ async def upload_image_to_db(user: UserDependency, images: list[UploadFile], req
 
     try:
         image_processor = ImageProcessor()
-        await image_processor.process_images(images=images)
+        await image_processor.process_images(user=user, images=images)
 
         return JSONResponse(
             content=APIResponse(
@@ -57,10 +57,12 @@ async def chat(user: UserDependency, message: str):
     """
 
     if not user:
+        print("here user not found:", user)
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     try:
-        response = await chat_response(user_query=message)
+        print("here")
+        response = await chat_response(user_info=user, user_query=message)
         return JSONResponse(
             content=APIResponse(
                 data=response

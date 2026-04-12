@@ -16,11 +16,13 @@ class ImageProcessor:
     def __init__(self):
         pass
 
-    async def process_images(self, images: list[UploadFile]):
+    async def process_images(self, user, images: list[UploadFile]):
         images_data: list = []
         for image in images:
             image_data = await image.read()
             image_data = self.process_image(image=image_data)
+            image_data.username = user["username"]
+            image_data.gender = user["gender"]
             images_data.append(image_data)
 
         # Push to mongodb

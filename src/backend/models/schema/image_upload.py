@@ -7,6 +7,10 @@ class ImageUpload(BaseModel):
         description="The foreign key from the 'users' collection for identifying the users"
     )
 
+    gender: str = Field(
+        description="The gender of the user"
+    )
+
     top: str = Field(
         description="A short 3-4 word description of the clothing above the waist line. Capture the colour and the garment type. If there is no clarity, set the value as 'None'.",
         default=None

@@ -4,6 +4,7 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from integration.mongo.connection import AsyncMongoConnection
 from common.constants import MONGO_URI, MONGO_DATABASE_NAME
@@ -21,6 +22,14 @@ async def lifespan(app: FastAPI):
     await mongodb_client.disconnect()
 
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_headers=["*"],
+    allow_methods=["*"],
+    allow_credentials=True
+)
 
 app.include_router(router=image_router)
 app.include_router(chat_router)

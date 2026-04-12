@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Outfit Selector</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <div class="container">
-        <div style="width: 100%; display: flex; flex-direction: column;">
+        <div class="app-header">
+            <div class="header-left"><span class="app-title">👔 Outfit Selector</span></div>
+            <div id="authStatus" class="header-auth">
+                <span id="welcomeText" class="welcome-user"></span>
+                <button id="logoutBtn" class="logout-btn" style="display:none">Sign out</button>
+            </div>
+        </div>
+        <div class="app-content">
             <div class="tabs">
                 <button class="tab-button active" data-tab="upload">📤 Upload Outfits</button>
                 <button class="tab-button" data-tab="chat">💬 Chat Assistant</button>

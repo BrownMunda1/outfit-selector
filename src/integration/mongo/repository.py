@@ -23,6 +23,12 @@ class GenericRepository:
         result = await cursor.to_list(length=None)
         return result
 
+    @classmethod
+    async def find_by_user(cls, collection: AsyncCollection, username: str):
+        cursor = collection.find({"username": username})
+        result = await cursor.to_list(length=None)
+        return result
+
 class UserRepository(GenericRepository):
 
     @classmethod

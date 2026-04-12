@@ -1,4 +1,5 @@
 import os
+import json
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
 
@@ -53,15 +54,19 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     )
 
     try:
+        print("here for chat user")
+        print("token from backend:", token)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
-        if username is None:
+        print("here get payload")
+        user_details = payload.get("sub")
+        print("here get sub")
+        if user_details is None:
+            print("here for chat user details none")
             raise credentials_exception
-        token_data = {
-            "username": username
-        }
+        token_data = json.loads(user_details)
         return token_data
-    except InvalidTokenError:
+    except InvalidTokenError as e:
+        print("Invalid token error:", e)
         raise credentials_exception
 
 
@@ -80,7 +85,10 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={
-            "sub": user.username,
+            "sub": json.dumps({
+                "username": user.username,
+                "gender": user.gender
+            }),
             "exp": access_token_expires
         },
         expires_delta=access_token_expires
@@ -123,6 +131,9 @@ def get_password_hash(password):
 async def get_user(db, username: str) -> User | None:
 
     user_list = await UserRepository.find(collection=db, username=username)
+    if len(user_list) == 0:
+        print("No username found")
+        return False
     user = user_list[0]
     if not user or len(user) == 0:
         return False

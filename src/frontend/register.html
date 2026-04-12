@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Register - Outfit Selector</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">👔</div>
+                <h1 class="auth-title">Outfit Selector</h1>
+            </div>
+
+            <div class="auth-welcome">
+                <h2>Create Account</h2>
+                <p>Join our community and discover your perfect style</p>
+            </div>
+
+            <form id="registerForm" aria-label="Register form" class="auth-form">
+                <div class="form-row">
+                    <div class="form-field form-field-half">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                placeholder="Choose a username"
+                                autocomplete="username"
+                                required
+                                class="form-input"
+                            />
+                        </div>
+                        <span class="field-error" id="usernameError"></span>
+                    </div>
+                    <div class="form-field form-field-half">
+                        <label for="name" class="form-label">Full Name</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📝</span>
+                            <input
+                                id="name"
+                                name="name"
+                                type="text"
+                                placeholder="Your full name"
+                                required
+                                class="form-input"
+                            />
+                        </div>
+                        <span class="field-error" id="nameError"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field form-field-half">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Create a strong password"
+                                autocomplete="new-password"
+                                required
+                                class="form-input"
+                            />
+                            <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">👁️</button>
+                        </div>
+                        <span class="field-error" id="passwordError"></span>
+                        <span class="field-hint">At least 8 characters</span>
+                    </div>
+                    <div class="form-field form-field-half">
+                        <label for="gender" class="form-label">Gender</label>
+                        <div class="input-wrapper select-wrapper">
+                            <span class="input-icon">✨</span>
+                            <select id="gender" name="gender" required class="form-input">
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <span class="field-error" id="genderError"></span>
+                    </div>
+                </div>
+
+                <div id="msg" aria-live="polite" class="auth-message"></div>
+
+                <button type="submit" class="auth-button" id="registerBtn">
+                    <span>Create Account</span>
+                    <span class="button-icon">→</span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>Already have an account?</span>
+            </div>
+
+            <a href="/login.html" class="auth-link-button">
+                <span>Sign in</span>
+                <span class="button-arrow">→</span>
+            </a>
+        </div>
+
+        <div class="auth-decoration">
+            <div class="decoration-item">✨</div>
+            <div class="decoration-item">👗</div>
+            <div class="decoration-item">👠</div>
+        </div>
+    </div>
+    <script src="./auth.js"></script>
+</body>
+</html>

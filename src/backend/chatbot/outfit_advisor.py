@@ -21,17 +21,19 @@ from integration.mongo.connection import AsyncMongoConnection
 from common.constants import IMAGE_COLLECTION_NAME
 from backend.utils.llm import LLM
 
-async def init() -> dict:
-
-
+async def init(user_info: dict) -> dict:
+    print("here2")
+    username = user_info.get("username")
+    print("here-1")
     collection = await AsyncMongoConnection().get_collection(collection_name=IMAGE_COLLECTION_NAME)
-
-    all_images_data = await GenericRepository.find_all(collection=collection)
-
+    print("here3")
+    all_images_data = await GenericRepository.find_by_user(collection=collection, username=username)
+    print("here4")
     extracted_images_data = []
     for document in all_images_data:
         doc: dict = document
         doc.pop("_id")
+        doc.pop("username")
         extracted_images_data.append(doc)
 
     print("extracted image data:", extracted_images_data)
@@ -40,9 +42,9 @@ async def init() -> dict:
         "image_data": extracted_images_data
     }
 
-async def chat_response(user_query: str):
+async def chat_response(user_info: dict, user_query: str):
 
-    image_data = await init()
+    image_data = await init(user_info=user_info)
 
     system_prompt = f"""You are supposedly the world's greatest Outfit Advisor. Given a set of outfits and their descriptions, your task is to find the best possible outfit for the user's question, which is most likely to be one related to the outfits. Return the top 3 outfits from the given set of outfits. Give a reason of why you're providing the suggestion.
     The Outfit Information: {image_data}

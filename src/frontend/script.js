@@ -31,7 +31,7 @@ uploadButton.addEventListener('click', (e) => {
 let uploadedImages = []; // Store uploaded images
 
 // Click to browse
-uploadArea.addEventListener('click', (e) =>{
+uploadArea.addEventListener('click', (e) => {
     fileInput.click();
 });
 
@@ -123,12 +123,20 @@ async function sendImagesToBackend() {
             formData.append('images', blob, img.name);
         });
 
+        const token = localStorage.getItem('access_token');
         const response = await fetch('/image/upload', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: token ? { 'Authorization': 'Bearer ' + token } : {}
         });
 
         if (!response.ok) {
+            if(response.status == 401){
+                alert("Authentication Failed. Please sign in again")
+                localStorage.removeItem("access_token");
+                window.location.href = "/login.html";
+                return;
+            }
             throw new Error(`Server error: ${response.status}`);
         }
 
@@ -219,11 +227,22 @@ async function sendMessage() {
 
     messages.push({ role: 'user', content: message });
     chatInput.value = '';
+    const token = localStorage.getItem('access_token');
+    console.log("token content:", token);
     const response = await fetch(`/chat/${encodeURIComponent(message)}`, {
-        method: 'GET'
+        method: 'GET',
+        headers: token ? { 'Authorization': 'Bearer ' + token } : {}
     });
 
+    console.log("Response:", response)
+
     if (!response.ok) {
+        if(response.status == 401){
+            alert("Authentication failed, Please sign in again");
+            localStorage.removeItem("access_token");
+            window.location.href = "/login.html";
+            return;
+        }
         throw new Error(`Server error: ${response.status}`);
     }
 
@@ -257,4 +276,29 @@ tabButtons.forEach(button => {
             setTimeout(() => chatInput.focus(), 100);
         }
     });
+});
+
+// Redirect to login if no token present (except on auth pages)
+document.addEventListener('DOMContentLoaded', () => {
+    const publicPaths = ['/login.html', '/register.html'];
+    const path = window.location.pathname;
+    const token = localStorage.getItem('access_token');
+    if (!token && !publicPaths.includes(path)) {
+        console.log("Here, no access token, login");
+        window.location.href = '/login.html';
+    }
+    // show welcome and logout if token exists
+    const welcomeText = document.getElementById('welcomeText');
+    const logoutBtn = document.getElementById('logoutBtn');
+    console.log("here, in index.html ");
+    if (token) {
+        // decode basic payload to show username if present
+        try {
+            console.log("here, found token in local storage");
+            const payload = token.split('.')[1];
+            const decoded = JSON.parse(atob(payload));
+            if (welcomeText) welcomeText.textContent = `Signed in as ${decoded.sub.username || decoded.username || ''}`;
+        } catch (_) { }
+        if (logoutBtn) { logoutBtn.style.display = 'inline-block'; logoutBtn.addEventListener('click', () => { localStorage.removeItem('access_token'); window.location.href = '/login.html'; }); }
+    }
 });
