@@ -54,14 +54,9 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     )
 
     try:
-        print("here for chat user")
-        print("token from backend:", token)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print("here get payload")
         user_details = payload.get("sub")
-        print("here get sub")
         if user_details is None:
-            print("here for chat user details none")
             raise credentials_exception
         token_data = json.loads(user_details)
         return token_data
@@ -132,7 +127,6 @@ async def get_user(db, username: str) -> User | None:
 
     user_list = await UserRepository.find(collection=db, username=username)
     if len(user_list) == 0:
-        print("No username found")
         return False
     user = user_list[0]
     if not user or len(user) == 0:

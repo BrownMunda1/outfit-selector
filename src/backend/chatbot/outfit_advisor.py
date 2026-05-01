@@ -22,21 +22,15 @@ from common.constants import IMAGE_COLLECTION_NAME
 from backend.utils.llm import LLM
 
 async def init(user_info: dict) -> dict:
-    print("here2")
     username = user_info.get("username")
-    print("here-1")
     collection = await AsyncMongoConnection().get_collection(collection_name=IMAGE_COLLECTION_NAME)
-    print("here3")
     all_images_data = await GenericRepository.find_by_user(collection=collection, username=username)
-    print("here4")
     extracted_images_data = []
     for document in all_images_data:
         doc: dict = document
         doc.pop("_id")
         doc.pop("username")
         extracted_images_data.append(doc)
-
-    print("extracted image data:", extracted_images_data)
 
     return {
         "image_data": extracted_images_data

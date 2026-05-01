@@ -57,11 +57,9 @@ async def chat(user: UserDependency, message: str):
     """
 
     if not user:
-        print("here user not found:", user)
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     try:
-        print("here")
         response = await chat_response(user_info=user, user_query=message)
         return JSONResponse(
             content=APIResponse(
