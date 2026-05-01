@@ -131,7 +131,7 @@ async function sendImagesToBackend() {
         });
 
         if (!response.ok) {
-            if(response.status == 401){
+            if (response.status == 401) {
                 alert("Authentication Failed. Please sign in again")
                 localStorage.removeItem("access_token");
                 window.location.href = "/login.html";
@@ -237,7 +237,7 @@ async function sendMessage() {
     console.log("Response:", response)
 
     if (!response.ok) {
-        if(response.status == 401){
+        if (response.status == 401) {
             alert("Authentication failed, Please sign in again");
             localStorage.removeItem("access_token");
             window.location.href = "/login.html";

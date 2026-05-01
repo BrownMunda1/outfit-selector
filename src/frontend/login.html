@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Login - Outfit Selector</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card">
@@ -24,15 +26,8 @@
                     <label for="username" class="form-label">Username</label>
                     <div class="input-wrapper">
                         <span class="input-icon">👤</span>
-                        <input
-                            id="username"
-                            name="username"
-                            type="text"
-                            placeholder="Enter your username"
-                            autocomplete="username"
-                            required
-                            class="form-input"
-                        />
+                        <input id="username" name="username" type="text" placeholder="Enter your username"
+                            autocomplete="username" required class="form-input" />
                     </div>
                     <span class="field-error" id="usernameError"></span>
                 </div>
@@ -44,16 +39,10 @@
                     </div>
                     <div class="input-wrapper">
                         <span class="input-icon">🔒</span>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            placeholder="Enter your password"
-                            autocomplete="current-password"
-                            required
-                            class="form-input"
-                        />
-                        <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">👁️</button>
+                        <input id="password" name="password" type="password" placeholder="Enter your password"
+                            autocomplete="current-password" required class="form-input" />
+                        <button type="button" class="toggle-password" id="togglePassword"
+                            aria-label="Toggle password visibility">👁️</button>
                     </div>
                     <span class="field-error" id="passwordError"></span>
                 </div>
@@ -84,4 +73,5 @@
     </div>
     <script src="./auth.js"></script>
 </body>
+
 </html>

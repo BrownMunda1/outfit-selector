@@ -57,7 +57,7 @@ if (loginForm) {
             });
             if (!res.ok) {
                 let errMsg = res.statusText;
-                try { const j = await res.json(); errMsg = j.detail || j.message || JSON.stringify(j); } catch(_) { try { errMsg = await res.text(); } catch(_){} }
+                try { const j = await res.json(); errMsg = j.detail || j.message || JSON.stringify(j); } catch (_) { try { errMsg = await res.text(); } catch (_) { } }
                 throw new Error(errMsg || res.statusText);
             }
             const data = await res.json();
@@ -103,7 +103,7 @@ if (registerForm) {
             });
             if (!res.ok) {
                 let errMsg = res.statusText;
-                try { const j = await res.json(); errMsg = j.detail || j.message || JSON.stringify(j); } catch(_) { try { errMsg = await res.text(); } catch(_){} }
+                try { const j = await res.json(); errMsg = j.detail || j.message || JSON.stringify(j); } catch (_) { try { errMsg = await res.text(); } catch (_) { } }
                 throw new Error(errMsg || res.statusText);
             }
             showMessage(msg, 'Account created! Redirecting to login...', false);

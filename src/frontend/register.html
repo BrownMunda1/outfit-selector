@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Register - Outfit Selector</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card">
@@ -25,15 +27,8 @@
                         <label for="username" class="form-label">Username</label>
                         <div class="input-wrapper">
                             <span class="input-icon">👤</span>
-                            <input
-                                id="username"
-                                name="username"
-                                type="text"
-                                placeholder="Choose a username"
-                                autocomplete="username"
-                                required
-                                class="form-input"
-                            />
+                            <input id="username" name="username" type="text" placeholder="Choose a username"
+                                autocomplete="username" required class="form-input" />
                         </div>
                         <span class="field-error" id="usernameError"></span>
                     </div>
@@ -41,14 +36,8 @@
                         <label for="name" class="form-label">Full Name</label>
                         <div class="input-wrapper">
                             <span class="input-icon">📝</span>
-                            <input
-                                id="name"
-                                name="name"
-                                type="text"
-                                placeholder="Your full name"
-                                required
-                                class="form-input"
-                            />
+                            <input id="name" name="name" type="text" placeholder="Your full name" required
+                                class="form-input" />
                         </div>
                         <span class="field-error" id="nameError"></span>
                     </div>
@@ -59,16 +48,10 @@
                         <label for="password" class="form-label">Password</label>
                         <div class="input-wrapper">
                             <span class="input-icon">🔒</span>
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                placeholder="Create a strong password"
-                                autocomplete="new-password"
-                                required
-                                class="form-input"
-                            />
-                            <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">👁️</button>
+                            <input id="password" name="password" type="password" placeholder="Create a strong password"
+                                autocomplete="new-password" required class="form-input" />
+                            <button type="button" class="toggle-password" id="togglePassword"
+                                aria-label="Toggle password visibility">👁️</button>
                         </div>
                         <span class="field-error" id="passwordError"></span>
                         <span class="field-hint">At least 8 characters</span>
@@ -113,4 +96,5 @@
     </div>
     <script src="./auth.js"></script>
 </body>
+
 </html>
