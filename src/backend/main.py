@@ -25,18 +25,18 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173"],
     allow_headers=["*"],
     allow_methods=["*"],
     allow_credentials=True
 )
 
 app.include_router(router=image_router)
-app.include_router(chat_router)
-app.include_router(auth_router)
+app.include_router(router=chat_router)
+app.include_router(router=auth_router)
 
 # Serve static files
-app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
+# app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
 
 
 if __name__ == "__main__":

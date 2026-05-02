@@ -92,7 +92,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     return Token(access_token=access_token, token_type="bearer")
 
 # To create a user, hit the /auth endpoint
-@auth_router.post("", status_code=status.HTTP_201_CREATED)
+@auth_router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(create_user_request: User, db = Depends(get_collection)):
     create_user_model = User(
         username=create_user_request.username,

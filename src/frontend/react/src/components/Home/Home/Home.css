@@ -1,0 +1,296 @@
+/* Home component styles (extracted from src/frontend/style.css) */
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Ensure the app root fills the viewport so centering works reliably */
+html,
+body,
+#root {
+    height: 100%;
+}
+
+#root {
+    border-inline: none;
+    display: grid;
+    place-items: center;
+}
+
+/* Page background and centering */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    color: #1a1a1a;
+    overflow: hidden;
+    /* prevent page-level scrolling; container will scroll */
+}
+
+/* App Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f5;
+    background: white;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.app-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+}
+
+.header-auth {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.welcome-user {
+    font-size: 13px;
+    color: #777;
+}
+
+.logout-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #e5e5e5;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #f5f5f7;
+    border-color: #d0d0d5
+}
+
+.logout-btn:active {
+    transform: scale(0.98)
+}
+
+.app-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1
+}
+
+/* Toasts (kept global) */
+.toast {
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-top: 14px;
+    font-size: 14px;
+    animation: slideUp 0.3s ease
+}
+
+.toast.error {
+    background: #fff0f0;
+    color: #b00000;
+    border: 1px solid #ffdddd
+}
+
+.toast.success {
+    background: #f0fdf4;
+    color: #076b22;
+    border: 1px solid #dbeafe
+}
+
+.small-muted {
+    font-size: 13px;
+    color: #888;
+    margin-top: 8px;
+    line-height: 1.4
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+/* Container: centered on screen; only this box scrolls when content overflows */
+.container {
+    width: 100%;
+    max-width: 1000px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    /* container scrolls internally */
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 40px);
+    /* account for body padding (20px top + 20px bottom) */
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 2px solid #e5e5e5;
+    background: white
+}
+
+.tab-button {
+    flex: 1;
+    padding: 16px 20px;
+    border: none;
+    background: none;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-button.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    background: #f8f9ff
+}
+
+.tab-button:hover {
+    background: #f5f5f5
+}
+
+.tab-content {
+    display: none;
+    flex: 1;
+    overflow: auto
+}
+
+.tab-content.active {
+    display: flex;
+    flex-direction: column
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 6px
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d0d0d0;
+    border-radius: 3px
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #999
+}
+
+/* Responsive adjustments: container max-height accounts for reduced body padding */
+@media (min-width: 1200px) {
+    .container {
+        max-height: calc(100vh - 40px);
+        max-width: 1200px
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+    .container {
+        max-height: calc(100vh - 40px);
+        max-width: 900px
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px
+    }
+
+    .container {
+        max-height: calc(100vh - 20px);
+        flex-direction: column;
+        max-width: 100%;
+        border-radius: 8px
+    }
+
+    .tab-button {
+        padding: 14px 16px;
+        font-size: 15px
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 8px
+    }
+
+    .container {
+        max-height: calc(100vh - 16px);
+        flex-direction: column;
+        max-width: 100%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        border-radius: 8px
+    }
+
+    .tab-button {
+        padding: 12px 10px;
+        font-size: 13px;
+        font-weight: 500
+    }
+}
+
+@media (max-width: 359px) {
+    .container {
+        border-radius: 6px
+    }
+
+    .tab-button {
+        padding: 10px 8px;
+        font-size: 12px
+    }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .container {
+        max-height: 95vh
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white
+    }
+
+    .container {
+        box-shadow: none;
+        border: 1px solid #ccc
+    }
+
+    .tab-button,
+    .send-btn,
+    .upload-btn {
+        display: none
+    }
+}
