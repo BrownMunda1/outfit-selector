@@ -12,13 +12,6 @@ Many a time you might have been in a dilemma of which outfit to select, for any 
 3. **Upload Multiple Outfit Images:** Upload multiple outfits from your wardrobe at once
 4. **Wardrobe Specific Suggestions:** All the suggestions from the interactive chat window will be specific to the outfit images which the logged in user has uploaded
 
-## Shortcomings (As of now)
-
-1. The user can ask anything in the chat window. Need to make it specific to the outfits
-2. The interactive chat window does not accept more than one chat, it is a single back and forth chat state
-3. The response from AI isn't formatted when it is displayed on the screen
-4. Authentication is Local Storage based. It is not safe enough
-
 ## Technology Used
 * Visual Studio Code
 * React for frontend
@@ -26,6 +19,13 @@ Many a time you might have been in a dilemma of which outfit to select, for any 
 * LangChain for AI, LangGraph is planned
 * GPT-4.1 for Image Processing
 * MongoDB for database
+
+## Shortcomings (As of now)
+
+1. The user can ask anything in the chat window. Need to make it specific to the outfits
+2. The interactive chat window does not accept more than one chat, it is a single back and forth chat state
+3. The response from AI isn't formatted when it is displayed on the screen
+4. Authentication is Local Storage based. It is not safe enough
 
 ## Potential Future Features
 1. Multiple back and forth chat support
