@@ -44,6 +44,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 # Function-2 == get_current_user: Takes the token, decodes it using the secret key and algorithm, and then return the user data based on the token
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
+    print("here2")
+
     SECRET_KEY = os.getenv("AUTH_SECRET_KEY")
     ALGORITHM = os.getenv("AUTH_ALGORITHM")
 
@@ -56,6 +58,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_details = payload.get("sub")
+        print(user_details)
         if user_details is None:
             raise credentials_exception
         token_data = json.loads(user_details)

@@ -282,6 +282,8 @@
 .auth-divider {
     margin: 28px 0 24px 0;
     text-align: center;
+    position: relative;
+    clear: both;
 }
 
 .auth-divider span {

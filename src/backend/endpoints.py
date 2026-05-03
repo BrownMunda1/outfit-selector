@@ -55,7 +55,7 @@ async def chat(user: UserDependency, message: str):
     """
     What does this do: Takes user message and passes it to LLM for response.
     """
-
+    print("here", user, message)
     if not user:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
