@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Chatbot.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import { createParser } from 'eventsource-parser';
 
 
 function Chatbot({ active }) {
@@ -31,36 +32,57 @@ function Chatbot({ active }) {
         }]);
 
         setChatMessageType("assistant");
+        setChatHistory(prev => [...prev, { message: "", type: "assistant" }]);
 
-        const chatApi = axios.create({
-            baseURL: import.meta.env.BACKEND_BASE_URL,
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
 
-        await chatApi.get(
-            import.meta.env.BACKEND_CHAT_ENDPOINT + `/${message}`,
-        ).then(
-            response => {
-                console.log("Chat Response", response);
-                const llmResponse = response.data["data"]["content"];
-
-                console.log("LLM Response", llmResponse);
-                setChatHistory(prev => [...prev, { message: llmResponse, type: "assistant" }]);
-            }
-        ).catch(
-            error => {
-                if (error.response && error.response.status === 401) {
-                    navigate("/login", { replace: true });
+        try {
+            const response = await fetch(
+                `${import.meta.env.BACKEND_BASE_URL}${import.meta.env.BACKEND_CHAT_ENDPOINT}/${message}`,
+                {
+                    headers: { "Authorization": `Bearer ${token}` }
                 }
-                throw new Error(`Server error: ${error.message}`);
+            );
+
+            if (response.status === 401){
+                return navigate("/login", { replace: true });
             }
-        ).finally(
-            () => {
-                setChatMessageType("user");
+            if (!response.ok){
+                throw new Error("Network response was not ok");
             }
-        );
+
+            // Attach a reader to the stream
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+
+            const parser = createParser({
+                onEvent: (event) => {
+                    const content = event.data; // Expects only a string! can deserialize it into a json
+
+                    if(content){
+
+                        setChatHistory(prev => {
+                            const newHistory = [...prev];
+                            newHistory[newHistory.length - 1].message += content;
+                            return newHistory;
+                        });
+                    }
+                }
+            });
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                // Feed the raw chunk into the parser
+                const chunk = decoder.decode(value, { stream: true });
+                parser.feed(chunk);
+            }
+        } catch (error) {
+            console.error("Streaming error:", error);
+        } finally {
+            setChatMessageType("user");
+        }
+
 
     };
 

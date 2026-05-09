@@ -5,12 +5,13 @@ from fastapi.routing import APIRouter
 from fastapi import Depends
 from fastapi.datastructures import UploadFile
 from fastapi import HTTPException
+from fastapi.sse import EventSourceResponse
 from pymongo.asynchronous.collection import AsyncCollection
 
 from backend.utils.image_processor import ImageProcessor
 from integration.dependencies.mongo import get_collection
 from backend.models.response.api_response import APIResponse
-from backend.chatbot.outfit_advisor import chat_response
+from backend.chatbot.outfit_advisor import ChatbotOrchestrator, chat_response
 from backend.auth import get_current_user
 
 UserDependency = Annotated[dict, Depends(get_current_user)]
@@ -60,13 +61,15 @@ async def chat(user: UserDependency, message: str):
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     try:
-        response = await chat_response(user_info=user, user_query=message)
-        return JSONResponse(
-            content=APIResponse(
-                data=response
-            ).model_dump(by_alias=True),
-            status_code=200
-        )
+        # response = await chat_response(user_info=user, user_query=message)
+        # return JSONResponse(
+        #     content=APIResponse(
+        #         data=response
+        #     ).model_dump(by_alias=True),
+        #     status_code=200
+        # )
+        chatbot = ChatbotOrchestrator(user_info=user)
+        return EventSourceResponse(chatbot.invoke(user_query=message))
     except Exception as e:
         return JSONResponse(
             content=APIResponse(
