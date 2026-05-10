@@ -3,6 +3,7 @@ import './Chatbot.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { createParser } from 'eventsource-parser';
+import ReactMarkdown from 'react-markdown';
 
 
 function Chatbot({ active }) {
@@ -112,14 +113,18 @@ function Chatbot({ active }) {
                         if (chat.type === "user") {
                             return (
                                 <div className="message user" key={index}>
-                                    <div className="message-content">{chat.message}</div>
+                                    <div className="message-content">
+                                        <ReactMarkdown>{chat.message}</ReactMarkdown>
+                                    </div>
                                 </div>
                             )
                         }
                         else {
                             return (
                                 <div className="message assistant" key={index}>
-                                    <div className="message-content">{chat.message}</div>
+                                    <div className="message-content">
+                                        <ReactMarkdown>{chat.message}</ReactMarkdown>
+                                    </div>
                                 </div>
                             )
                         }

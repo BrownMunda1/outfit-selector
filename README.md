@@ -16,21 +16,18 @@ Many a time you might have been in a dilemma of which outfit to select, for any 
 * Visual Studio Code
 * React for frontend
 * FastAPI for backend
-* LangChain for AI, LangGraph is planned
+* LangChain for AI, LangGraph for Chatbot
 * GPT-4.1 for Image Processing
 * MongoDB for database
 
 ## Shortcomings (As of now)
 
-1. The user can ask anything in the chat window. Need to make it specific to the outfits
-2. The interactive chat window does not accept more than one chat, it is a single back and forth chat state --> resolving
-3. The response from AI isn't formatted when it is displayed on the screen
-4. Authentication is Local Storage based. It is not safe enough
+- The user can ask anything in the chat window. Need to make it specific to the outfits
+- Authentication is Local Storage based. It is not safe enough
 
 ## Potential Future Features
-1. Multiple back and forth chat support
-2. Add constraint to accept queries only related to outfits
-3. Format the results of LLM so that users get a better UX
-4. Integrate Weather API so that user can get recommendations according to the destination's weather
-5. Add a layer which can suggest outfits/accessories which the user can shop for, and possibly provide links to those
-6. Add a rate limiter layer to prevent multiple LLM calls
+- Add constraint to accept queries only related to outfits
+- Add a rate limiter layer to prevent multiple LLM calls
+- Integrate Weather API so that user can get recommendations according to the destination's weather
+- Add a layer which can suggest outfits/accessories which the user can shop for, and possibly provide links to those
+- Add a feature of chat persistence, user can continue to converse with a previous chat
