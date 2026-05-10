@@ -37,14 +37,19 @@ function Chatbot({ active }) {
 
 
         try {
-            const url = `${import.meta.env.BACKEND_BASE_URL}${import.meta.env.BACKEND_CHAT_ENDPOINT}/${message}`;
-            if(checkpointId){
-                url += `/${checkpointId}`;
-            }
+            const url = `${import.meta.env.BACKEND_BASE_URL}${import.meta.env.BACKEND_CHAT_ENDPOINT}`;
             const response = await fetch(
                 url,
                 {
-                    headers: { "Authorization": `Bearer ${token}` }
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        chat_thread_id: checkpointId
+                    })
                 }
             );
 

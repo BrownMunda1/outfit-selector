@@ -11,8 +11,9 @@ from pymongo.asynchronous.collection import AsyncCollection
 from backend.utils.image_processor import ImageProcessor
 from integration.dependencies.mongo import get_collection
 from backend.models.response.api_response import APIResponse
-from backend.chatbot.outfit_advisor import ChatbotOrchestrator, chat_response
+from backend.chatbot.outfit_advisor import ChatbotOrchestrator
 from backend.auth import get_current_user
+from src.backend.models.request.chat_request import ChatStreamRequest
 
 UserDependency = Annotated[dict, Depends(get_current_user)]
 
@@ -50,13 +51,13 @@ async def upload_image_to_db(user: UserDependency, images: list[UploadFile], req
 
 
 chat_router = APIRouter(prefix="/chat")
-@chat_router.get("/{message}")
-async def chat(user: UserDependency, message: str, chat_thread_id: str | None = None):
+@chat_router.post("/stream")
+async def chat(user: UserDependency, stream_request: ChatStreamRequest):
 
     """
     What does this do: Takes user message and passes it to LLM for response.
     """
-    print("here", user, message)
+    print("here", user, stream_request.message)
     if not user:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
@@ -68,8 +69,8 @@ async def chat(user: UserDependency, message: str, chat_thread_id: str | None = 
         #     ).model_dump(by_alias=True),
         #     status_code=200
         # )
-        chatbot = ChatbotOrchestrator(user_info=user) # Whenever this is called, a new graph is generated even when it is the same user, fix this so that same user isn't affected by the calls unless there is some update in outfits. Might be reset the chat state when a new outfit is uploaded
-        return EventSourceResponse(chatbot.invoke(user_query=message, chat_thread_id=chat_thread_id))
+        chatbot = ChatbotOrchestrator(user_info=user)
+        return EventSourceResponse(chatbot.invoke(user_query=stream_request.message, chat_thread_id=stream_request.chat_thread_id))
     except Exception as e:
         return JSONResponse(
             content=APIResponse(
