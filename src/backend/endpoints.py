@@ -51,7 +51,7 @@ async def upload_image_to_db(user: UserDependency, images: list[UploadFile], req
 
 chat_router = APIRouter(prefix="/chat")
 @chat_router.get("/{message}")
-async def chat(user: UserDependency, message: str):
+async def chat(user: UserDependency, message: str, chat_thread_id: str | None = None):
 
     """
     What does this do: Takes user message and passes it to LLM for response.
@@ -68,8 +68,8 @@ async def chat(user: UserDependency, message: str):
         #     ).model_dump(by_alias=True),
         #     status_code=200
         # )
-        chatbot = ChatbotOrchestrator(user_info=user)
-        return EventSourceResponse(chatbot.invoke(user_query=message))
+        chatbot = ChatbotOrchestrator(user_info=user) # Whenever this is called, a new graph is generated even when it is the same user, fix this so that same user isn't affected by the calls unless there is some update in outfits. Might be reset the chat state when a new outfit is uploaded
+        return EventSourceResponse(chatbot.invoke(user_query=message, chat_thread_id=chat_thread_id))
     except Exception as e:
         return JSONResponse(
             content=APIResponse(

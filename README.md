@@ -23,7 +23,7 @@ Many a time you might have been in a dilemma of which outfit to select, for any 
 ## Shortcomings (As of now)
 
 1. The user can ask anything in the chat window. Need to make it specific to the outfits
-2. The interactive chat window does not accept more than one chat, it is a single back and forth chat state
+2. The interactive chat window does not accept more than one chat, it is a single back and forth chat state --> resolving
 3. The response from AI isn't formatted when it is displayed on the screen
 4. Authentication is Local Storage based. It is not safe enough
 

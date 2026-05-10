@@ -10,6 +10,7 @@ function Chatbot({ active }) {
     const [userInput, setUserInput] = useState("");
     const [chatMessageType, setChatMessageType] = useState("user");
     const [chatHistory, setChatHistory] = useState([]);
+    const [checkpointId, setCheckpointId] = useState(null); // This is for ALL users, maintain a map of users and remove the user's data after some timeout or on logout, logout is better
 
     const navigate = useNavigate();
 
@@ -36,8 +37,12 @@ function Chatbot({ active }) {
 
 
         try {
+            const url = `${import.meta.env.BACKEND_BASE_URL}${import.meta.env.BACKEND_CHAT_ENDPOINT}/${message}`;
+            if(checkpointId){
+                url += `/${checkpointId}`;
+            }
             const response = await fetch(
-                `${import.meta.env.BACKEND_BASE_URL}${import.meta.env.BACKEND_CHAT_ENDPOINT}/${message}`,
+                url,
                 {
                     headers: { "Authorization": `Bearer ${token}` }
                 }
@@ -56,10 +61,14 @@ function Chatbot({ active }) {
 
             const parser = createParser({
                 onEvent: (event) => {
-                    const content = event.data; // Expects only a string! can deserialize it into a json
+                    const data = JSON.parse(event.data); // Expects only a string! can deserialize it into a json
 
-                    if(content){
+                    if(data.type === "checkpoint"){
+                        setCheckpointId(data["chat_thread_id"]);
+                    }
 
+                    if(data.type === "content"){
+                        let content = data["content"];
                         setChatHistory(prev => {
                             const newHistory = [...prev];
                             newHistory[newHistory.length - 1].message += content;

@@ -1,8 +1,9 @@
 from uuid import uuid4
 
 from langchain.messages import AIMessageChunk, HumanMessage
+from langchain_core.messages import SystemMessage
 from langgraph.graph import StateGraph, START, END
-from langchain_core.messages import AIMessage
+from langgraph.checkpoint.memory import MemorySaver
 
 from integration.mongo.repository import GenericRepository
 from integration.mongo.connection import AsyncMongoConnection
@@ -52,17 +53,31 @@ class ChatbotOrchestrator:
     def __init__(self, user_info: dict):
         self.user_info = user_info
 
+        image_data = self._init()
+
+        system_prompt = f"""You are supposedly the world's greatest Outfit Advisor. Given a set of outfits and their descriptions, your task is to find the best possible outfit for the user's question, which is most likely to be one related to the outfits. Return the top 3 outfits from the given set of outfits. Give a reason of why you're providing the suggestion. The Outfit Information:
+        {image_data}"""
+
+        system_message_content = {
+            "type": "text",
+            "text": system_prompt
+        }
+
+        system_message: SystemMessage = SystemMessage(content=system_message_content)
+
+        self.system_prompt = system_message
+
         # Build Graph
         graph = StateGraph(ChatState)
-        graph.add_node(self.INIT_NODE, self._init)
+        # graph.add_node(self.INIT_NODE, self._init)
         graph.add_node(self.MODEL_NODE, self._model)
-        graph.add_edge(START, self.INIT_NODE)
-        graph.add_edge(self.INIT_NODE, self.MODEL_NODE)
+        # graph.add_edge(START, self.INIT_NODE)
+        graph.add_edge(START, self.MODEL_NODE)
         graph.add_edge(self.MODEL_NODE, END)
 
-        self.graph = graph.compile()
+        self.graph = graph.compile(checkpointer=MemorySaver())
 
-    async def _init(self, state: ChatState):
+    async def _init(self):
         username = self.user_info.get("username")
         collection = await AsyncMongoConnection().get_collection(collection_name=IMAGE_COLLECTION_NAME)
         all_images_data = await GenericRepository.find_by_user(collection=collection, username=username)
@@ -78,39 +93,54 @@ class ChatbotOrchestrator:
         }
 
     async def _model(self, state: ChatState):
-        system_prompt = f"""You are supposedly the world's greatest Outfit Advisor. Given a set of outfits and their descriptions, your task is to find the best possible outfit for the user's question, which is most likely to be one related to the outfits. Return the top 3 outfits from the given set of outfits. Give a reason of why you're providing the suggestion. The Outfit Information:
-        {state["image_data"]}
 
-        Question:
-        {state["messages"]}"""
-
-        system_message_content = {
-            "type": "text",
-            "text": system_prompt
-        }
-
-        system_message: AIMessage = AIMessage(content=[system_message_content])
-
-        response = LLM(chat=True).invoke(messages=[system_message])
+        response = LLM(chat=True).invoke(state["messages"])
         return {
             "messages": response
         }
 
-    async def invoke(self, user_query: str):
-        chat_config = {
-            "configurable":{
-                "thread_id": self.generate_chat_id()
+    async def invoke(self, user_query: str, chat_thread_id: str | None):
+
+        if chat_thread_id is None:
+
+            new_chat_thread_id = self.generate_chat_id()
+            chat_config = {
+                "configurable":{
+                    "thread_id": new_chat_thread_id
+                }
             }
-        }
-        async for chunk in self.graph.astream_events(
-            {
-                "messages": [
-                    HumanMessage(content=user_query)
-                ]
-            },
-            version="v2",
-            config=chat_config,
-        ):
+
+            events = self.graph.astream_events(
+                {
+                    "messages": [
+                        self.system_prompt,
+                        HumanMessage(content=user_query)
+                    ]
+                },
+                version="v2",
+                config=chat_config,
+            )
+
+            yield f"data: {{\"type\": \"checkpoint\", \"chat_thread_id\": \"{new_chat_thread_id}\"}}\n\n"
+
+        else:
+            chat_config = {
+                "configurable":{
+                    "thread_id": chat_thread_id
+                }
+            }
+            events = self.graph.astream_events(
+                {
+                    "messages": [
+                        HumanMessage(content=user_query)
+                    ]
+                },
+                version="v2",
+                config=chat_config,
+            )
+
+
+        async for chunk in events:
 
             # print("CHUNKKKK:", chunk)
 
@@ -122,7 +152,7 @@ class ChatbotOrchestrator:
 
                 ## SSE Format for FastAPI to Frontend communication
                 if content:
-                    yield f"data: {content}\n\n"
+                    yield f"data: {{\"type\": \"content\", \"content\": \"{content}\"}}\n\n"
 
     def generate_chat_id(self) -> str:
         return str(uuid4())
