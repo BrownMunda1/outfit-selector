@@ -1,7 +1,7 @@
 from pymongo.asynchronous.collection import AsyncCollection
 from pymongo.results import InsertOneResult, InsertManyResult
 
-from backend.models.schema import ImageUpload, User
+from models.schema import ImageUpload, User
 
 class GenericRepository:
 

@@ -72,3 +72,4 @@ dmypy.json
 temp*
 qdrant*
 images/
+*.pem

@@ -2,8 +2,8 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.checkpoint.memory import MemorySaver
 
-from backend.chatbot.state import ChatState
-from backend.utils.llm import LLM
+from chatbot.state import ChatState
+from utils.llm import LLM
 
 _global_checkpointer = MemorySaver()
 _global_graph = None

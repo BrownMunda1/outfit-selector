@@ -8,9 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from integration.mongo.connection import AsyncMongoConnection
 from common.constants import MONGO_URI, MONGO_DATABASE_NAME
-from backend.endpoints import image_router
-from backend.endpoints import chat_router
-from backend.auth import auth_router
+from endpoints import image_router
+from endpoints import chat_router
+from auth import auth_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,6 +22,7 @@ async def lifespan(app: FastAPI):
     yield
     await mongodb_client.disconnect()
 
+
 app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
@@ -28,7 +30,7 @@ app.add_middleware(
     allow_origins=["http://localhost:5173"],
     allow_headers=["*"],
     allow_methods=["*"],
-    allow_credentials=True
+    allow_credentials=True,
 )
 
 app.include_router(router=image_router)
@@ -40,7 +42,4 @@ app.include_router(router=auth_router)
 
 
 if __name__ == "__main__":
-    uvicorn.run(
-        app="backend.main:app",
-        reload=True
-    )
+    uvicorn.run(app="main:app", reload=True)

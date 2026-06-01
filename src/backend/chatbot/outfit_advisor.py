@@ -9,7 +9,7 @@ from langgraph.graph.state import CompiledStateGraph
 from integration.mongo.repository import GenericRepository
 from integration.mongo.connection import AsyncMongoConnection
 from common.constants import IMAGE_COLLECTION_NAME
-from backend.chatbot.graph import get_graph
+from chatbot.graph import get_graph
 
 # async def init(user_info: dict) -> dict: # Starting node
 #     username = user_info.get("username")
@@ -45,6 +45,7 @@ from backend.chatbot.graph import get_graph
 #     response = LLM(chat=True).invoke(messages=[system_message])
 #     return response
 
+
 class ChatbotOrchestrator:
 
     INIT_NODE = "init"
@@ -66,8 +67,12 @@ class ChatbotOrchestrator:
 
     async def _init(self):
         username = self.user_info.get("username")
-        collection = await AsyncMongoConnection().get_collection(collection_name=IMAGE_COLLECTION_NAME)
-        all_images_data = await GenericRepository.find_by_user(collection=collection, username=username)
+        collection = await AsyncMongoConnection().get_collection(
+            collection_name=IMAGE_COLLECTION_NAME
+        )
+        all_images_data = await GenericRepository.find_by_user(
+            collection=collection, username=username
+        )
         extracted_images_data: list[dict] = []
         for document in all_images_data:
             doc: dict = document
@@ -75,9 +80,7 @@ class ChatbotOrchestrator:
             doc.pop("username")
             extracted_images_data.append(doc)
 
-        return {
-            "image_data": extracted_images_data
-        }
+        return {"image_data": extracted_images_data}
 
     async def invoke(self, user_query: str, chat_thread_id: str | None):
 
@@ -86,21 +89,12 @@ class ChatbotOrchestrator:
         if chat_thread_id is None:
 
             new_chat_thread_id = f"{self.generate_chat_id()}:{username}"
-            chat_config = {
-                "configurable":{
-                    "thread_id": new_chat_thread_id
-                }
-            }
+            chat_config = {"configurable": {"thread_id": new_chat_thread_id}}
             print("chat thread id ready")
             system_message = await self.get_system_message()
 
             events = self.graph.astream_events(
-                {
-                    "messages": [
-                        system_message,
-                        HumanMessage(content=user_query)
-                    ]
-                },
+                {"messages": [system_message, HumanMessage(content=user_query)]},
                 version="v2",
                 config=chat_config,
             )
@@ -116,23 +110,16 @@ class ChatbotOrchestrator:
         else:
 
             if not chat_thread_id.endswith(f":{username}"):
-                raise HTTPException(status_code=403, detail="This thread ID doesn't belong to this user")
+                raise HTTPException(
+                    status_code=403, detail="This thread ID doesn't belong to this user"
+                )
 
-            chat_config = {
-                "configurable":{
-                    "thread_id": chat_thread_id
-                }
-            }
+            chat_config = {"configurable": {"thread_id": chat_thread_id}}
             events = self.graph.astream_events(
-                {
-                    "messages": [
-                        HumanMessage(content=user_query)
-                    ]
-                },
+                {"messages": [HumanMessage(content=user_query)]},
                 version="v2",
                 config=chat_config,
             )
-
 
         async for chunk in events:
             # print("iterating chunks")

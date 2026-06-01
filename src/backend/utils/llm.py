@@ -1,6 +1,6 @@
 from langchain.chat_models import init_chat_model
 
-from backend.models.schema import ImageUpload
+from models.schema import ImageUpload
 
 class LLM:
     def __init__(self, chat: bool = False):

@@ -1,0 +1,24 @@
+services:
+
+  backend:
+    image: brownmunda/outfit-selector-backend:latest
+    ports:
+      - "8000:8000"
+      # "HOST_PORT:CONTAINER_PORT"
+      # Left side = port on EC2 that the world can hit
+      # Right side = port your app listens on inside the container
+    env_file:
+      - .env
+      # Load environment variables from a .env file on EC2
+      # This is how you pass secrets (DB URLs, API keys) without hardcoding them
+    restart: always
+    # If the container crashes, Docker automatically restarts it
+
+  frontend:
+    image: brownmunda/outfit-selector-backend:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+      # Docker will start backend before frontend
+    restart: always

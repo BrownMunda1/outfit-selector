@@ -1,0 +1,9 @@
+fastapi[standard]
+pymongo
+langgraph
+langgraph-cli[inmem]
+langchain
+langchain-openai
+Pillow
+pyjwt[crypto]
+pwdlib[argon2]

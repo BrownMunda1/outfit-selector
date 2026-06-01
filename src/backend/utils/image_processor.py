@@ -6,10 +6,11 @@ from PIL import Image
 from langchain.messages import HumanMessage
 from fastapi.datastructures import UploadFile
 
-from backend.utils.llm import LLM
+from utils.llm import LLM
 from common.constants import IMAGE_COLLECTION_NAME
 from integration.mongo.connection import AsyncMongoConnection
 from integration.mongo.repository import GenericRepository
+
 
 class ImageProcessor:
 
@@ -26,9 +27,13 @@ class ImageProcessor:
             images_data.append(image_data)
 
         # Push to mongodb
-        collection = await AsyncMongoConnection().get_collection(collection_name=IMAGE_COLLECTION_NAME)
+        collection = await AsyncMongoConnection().get_collection(
+            collection_name=IMAGE_COLLECTION_NAME
+        )
 
-        result = await GenericRepository.insert_many(collection=collection, data = images_data)
+        result = await GenericRepository.insert_many(
+            collection=collection, data=images_data
+        )
 
         return result
 
@@ -47,16 +52,18 @@ class ImageProcessor:
 
     def _prepare_content_for_llm_prompt(self, image_base64):
         content = []
-        content.append({
-            "type": "image_url",
-            "image_url": {
-                "url": f"data:image/png;base64,{image_base64}"
+        content.append(
+            {
+                "type": "image_url",
+                "image_url": {"url": f"data:image/png;base64,{image_base64}"},
             }
-        })
+        )
 
-        content.append({
-            "type": "text",
-            "text": "Extract the clothing details from the provided image. Details should include the colour, the type of clothing (whether it is a shirt, t-shirt, crop top, baggy jeans, normal jeans etc), the texture and accessories (like rings, necklaces) if any."
-        })
+        content.append(
+            {
+                "type": "text",
+                "text": "Extract the clothing details from the provided image. Details should include the colour, the type of clothing (whether it is a shirt, t-shirt, crop top, baggy jeans, normal jeans etc), the texture and accessories (like rings, necklaces) if any.",
+            }
+        )
 
         return HumanMessage(content=content)
