@@ -79,6 +79,7 @@ jobs:
           script: |
             echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
+            # Manually created this app folder
             cd /home/ubuntu/app
             docker compose pull
             docker compose up -d
