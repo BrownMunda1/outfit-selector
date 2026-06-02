@@ -27,15 +27,15 @@ jobs:
             node-version: 24
 
       - name: Create Virtual Environment and Install Backend Dependencies
-        run:
-            python -m venv .venv
-            echo "Created Virtual Environment"
-            source .venv/bin/activate
-            echo "Activated Virtual Environment"
-            pip install -r src/backend/requirements.txt
+        run: |
+          python -m venv .venv
+          echo "Created Virtual Environment"
+          source .venv/bin/activate
+          echo "Activated Virtual Environment"
+          pip install -r src/backend/requirements.txt
 
       - name: Install Frontend Dependencies
-        run:
+        run: |
             npm ci
 
       - name: Log in to Docker Hub
