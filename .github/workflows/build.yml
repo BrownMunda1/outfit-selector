@@ -1,4 +1,5 @@
 name: AWS Pipeline
+run-name: AWS Pipeline
 
 on:
   push:
@@ -27,16 +28,17 @@ jobs:
             node-version: 24
 
       - name: Create Virtual Environment and Install Backend Dependencies
+        working-directory: src/backend
         run: |
           python -m venv .venv
           echo "Created Virtual Environment"
           source .venv/bin/activate
           echo "Activated Virtual Environment"
-          pip install -r src/backend/requirements.txt
+          pip install -r requirements.txt
 
       - name: Install Frontend Dependencies
-        run: |
-            npm ci
+        working-directory: src/frontend
+        run: npm ci
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
