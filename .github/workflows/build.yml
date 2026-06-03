@@ -70,6 +70,16 @@ jobs:
       - name: Successful Pushed Frontend Image
         run: echo "Successfully Pushed Frontend Image to Docker Hub"
 
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml"       # file from your repo
+          target: "/home/ubuntu/app"         # destination on EC2
+          overwrite: true   # overwrite the file in every upload
+
         # Manually created this app folder. Make sure to have docker installed in the ec2 instance. Also make sure that the machine is added to docker groups
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1
