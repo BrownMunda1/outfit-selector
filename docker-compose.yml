@@ -13,7 +13,7 @@ services:
     # If the container crashes, Docker automatically restarts it
 
   frontend:
-    image: brownmunda/outfit-selector-backend:latest
+    image: brownmunda/outfit-selector-frontend:latest
     ports:
       - "3000:3000"
     depends_on:
