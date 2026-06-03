@@ -80,7 +80,7 @@ jobs:
           target: "/home/ubuntu/app"         # destination on EC2
           overwrite: true   # overwrite the file in every upload
 
-        # Manually created this app folder. Make sure to have docker installed in the ec2 instance. Also make sure that the machine is added to docker groups
+      # Manually created this app folder. Make sure to have docker installed in the ec2 instance. Also make sure that the machine is added to docker groups
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1
         with:

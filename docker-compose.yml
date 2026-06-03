@@ -5,12 +5,10 @@ services:
     ports:
       - "8000:8000"
       # "HOST_PORT:CONTAINER_PORT"
-      # Left side = port on EC2 that the world can hit
-      # Right side = port your app listens on inside the container
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
       # Load environment variables from a .env file on EC2
-      # This is how you pass secrets (DB URLs, API keys) without hardcoding them
+
     restart: always
     # If the container crashes, Docker automatically restarts it
 
