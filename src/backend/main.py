@@ -33,6 +33,7 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "https://outfit-selector-frontend-8gdv4odcq-brown-munda-solo.vercel.app"],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_headers=["*"],
     allow_methods=["*"],
     allow_credentials=True,
