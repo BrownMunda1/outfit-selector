@@ -26,7 +26,17 @@ class AsyncMongoConnection:
 
     async def connect(self, database: Optional[str] = None) -> Optional["AsyncMongoConnection"]:
         try:
-            self.client = AsyncMongoClient(host=self.uri)
+            self.client = AsyncMongoClient(
+                host=self.uri,
+                tls=True,
+                tlsAllowInvalidCertificates=False,
+                serverSelectionTimeoutMS=5000,
+                connectTimeoutMS=10000,
+                socketTimeoutMS=None,
+                retryWrites=False,
+                maxPoolSize=50,
+                minPoolSize=10
+            )
             await self.client.aconnect()
 
             # Get database
