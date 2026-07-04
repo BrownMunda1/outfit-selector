@@ -1,5 +1,5 @@
 fastapi[standard]
-pymongo
+pymongo[srv]
 langgraph
 langgraph-cli[inmem]
 langchain
