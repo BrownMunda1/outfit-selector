@@ -10,7 +10,7 @@ from fastapi import Depends, HTTPException, status
 import jwt
 from jwt.exceptions import InvalidTokenError
 
-from common.constants import USER_COLLECTION_NAME
+from common.constants import USER_COLLECTION_NAME, AUTH_ALGORITHM, AUTH_SECRET_KEY
 from integration.mongo.connection import AsyncMongoConnection
 from integration.mongo.repository import UserRepository
 from models.schema import User
@@ -26,15 +26,15 @@ oauth2_scheme = OAuth2PasswordBearer(
 
 async def get_collection():
     collection = await AsyncMongoConnection().get_collection(
-        collection_name=USER_COLLECTION_NAME
+        collection_name=os.getenv(USER_COLLECTION_NAME)
     )
     return collection
 
 
 # Function-1 == create_access_token: It creates an access token based on user data (in this case, username)
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
-    SECRET_KEY = os.getenv("AUTH_SECRET_KEY")
-    ALGORITHM = os.getenv("AUTH_ALGORITHM")
+    SECRET_KEY = os.getenv(AUTH_SECRET_KEY)
+    ALGORITHM = os.getenv(AUTH_ALGORITHM)
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta

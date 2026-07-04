@@ -1,3 +1,4 @@
+import os
 import json
 from uuid import uuid4
 
@@ -68,7 +69,7 @@ class ChatbotOrchestrator:
     async def _init(self):
         username = self.user_info.get("username")
         collection = await AsyncMongoConnection().get_collection(
-            collection_name=IMAGE_COLLECTION_NAME
+            collection_name=os.getenv(IMAGE_COLLECTION_NAME)
         )
         all_images_data = await GenericRepository.find_by_user(
             collection=collection, username=username
