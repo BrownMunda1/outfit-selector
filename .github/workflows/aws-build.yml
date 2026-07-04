@@ -2,8 +2,7 @@ name: AWS Pipeline
 run-name: AWS Pipeline
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 env:
     IMAGE_PREFIX: ${{secrets.DOCKERHUB_USERNAME}}/outfit-selector
