@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -16,8 +17,12 @@ from auth import auth_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     load_dotenv()
-    mongodb_client = AsyncMongoConnection(uri=MONGO_URI)
-    database = await mongodb_client.connect(database=MONGO_DATABASE_NAME)
+
+    mongo_uri = os.getenv(MONGO_URI)
+    mongo_database = os.getenv(MONGO_DATABASE_NAME)
+
+    mongodb_client = AsyncMongoConnection(uri=mongo_uri)
+    database = await mongodb_client.connect(database=mongo_database)
     app.state.mongo_db = database
     yield
     await mongodb_client.disconnect()
@@ -42,4 +47,9 @@ app.include_router(router=auth_router)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app="main:app", reload=True)
+    uvicorn.run(
+        app="main:app",
+        host="0.0.0.0",
+        port=int(os.getenv("PORT", 8000)),
+        reload=True,
+    )

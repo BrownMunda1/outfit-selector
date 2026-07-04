@@ -1,4 +1,5 @@
 import io
+import os
 import base64
 
 from dotenv import load_dotenv
@@ -28,7 +29,7 @@ class ImageProcessor:
 
         # Push to mongodb
         collection = await AsyncMongoConnection().get_collection(
-            collection_name=IMAGE_COLLECTION_NAME
+            collection_name=os.getenv(IMAGE_COLLECTION_NAME)
         )
 
         result = await GenericRepository.insert_many(
