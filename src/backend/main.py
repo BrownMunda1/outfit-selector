@@ -32,12 +32,12 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://outfit-selector-bice.vercel.app"],
+    allow_origins=["http://localhost:5173", "https://outfit-selector-frontend-8gdv4odcq-brown-munda-solo.vercel.app"],
     allow_headers=["*"],
     allow_methods=["*"],
     allow_credentials=True,
 )
-
+#### TODO: DESIGN ISSUE: There is no endpoint at "/"
 app.include_router(router=image_router)
 app.include_router(router=chat_router)
 app.include_router(router=auth_router)
