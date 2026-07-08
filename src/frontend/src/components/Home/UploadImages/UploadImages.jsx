@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import './UploadImages.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import Spinner from '../../common/Spinner';
 
 function UploadImages({ active }) {
 
     const [imageList, setImageList] = useState([]);
+    const [isUploading, setIsUploading] = useState(false);
 
     const fileInputRef = useRef(null);
     const uploadAreaRef = useRef(null);
@@ -67,41 +69,43 @@ function UploadImages({ active }) {
     };
 
     const handleImageUpload = async (e) => {
+        if (isUploading) return;
+
         const token = localStorage.getItem("access_token");
         if (!token) {
             navigate("/login", { replace: true });
+            return;
         }
+
+        setIsUploading(true);
         const formData = new FormData();
         imageList.forEach(image => formData.append("images", image.file, image.name));
 
-        const imageUploadApi = axios.create({
-            baseURL: import.meta.env.BACKEND_BASE_URL,
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-            // withCredentials: true // use for cookie-based refresh
-        });
-
-        await imageUploadApi.post(
-            import.meta.env.BACKEND_IMAGE_UPLOAD_ENDPOINT,
-            formData
-        ).then(
-            response => {
-                alert("Images Uploaded Successfully!");
-                console.log("Successful Images Upload:", response.data);
-            }
-        ).catch(
-            error => {
-                if (error.response && error.response.status === 401) {
-                    navigate("/login", { replace: true });
+        try {
+            const imageUploadApi = axios.create({
+                baseURL: import.meta.env.BACKEND_BASE_URL,
+                headers: {
+                    "Authorization": "Bearer " + token
                 }
-                throw new Error(`Server error: ${error.message}`);
+                // withCredentials: true // use for cookie-based refresh
+            });
+
+            const response = await imageUploadApi.post(
+                import.meta.env.BACKEND_IMAGE_UPLOAD_ENDPOINT,
+                formData
+            );
+
+            alert("Images Uploaded Successfully! Proceed to Chat Tab to choose your OOTD!");
+            console.log("Successful Images Upload:", response.data);
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                navigate("/login", { replace: true });
             }
-        ).finally(
-            () => {
-                setImageList([]);
-            }
-        );
+            throw new Error(`Server error: ${error.message}`);
+        } finally {
+            setImageList([]);
+            setIsUploading(false);
+        }
     };
 
     const removeImage = (index) => {
@@ -126,7 +130,9 @@ function UploadImages({ active }) {
                         </div>
                     ))}
                 </div>
-                <button className="upload-outfit-btn" id="uploadOutfitBtn" disabled={imageList.length === 0} onClick={handleImageUpload} >Upload Outfits</button>
+                <button className="upload-outfit-btn" id="uploadOutfitBtn" disabled={imageList.length === 0 || isUploading} onClick={handleImageUpload} aria-busy={isUploading}>
+                    {isUploading ? <Spinner label="Uploading images..." /> : 'Upload Outfits'}
+                </button>
             </div>
         </div>
     )

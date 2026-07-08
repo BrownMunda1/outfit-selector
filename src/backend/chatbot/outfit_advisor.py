@@ -63,7 +63,6 @@ class ChatbotOrchestrator:
         {image_data}"""
 
         system_message: SystemMessage = SystemMessage(content=system_prompt)
-        print("system message ready")
         return system_message
 
     async def _init(self):
@@ -91,7 +90,6 @@ class ChatbotOrchestrator:
 
             new_chat_thread_id = f"{self.generate_chat_id()}:{username}"
             chat_config = {"configurable": {"thread_id": new_chat_thread_id}}
-            print("chat thread id ready")
             system_message = await self.get_system_message()
 
             events = self.graph.astream_events(
@@ -99,7 +97,6 @@ class ChatbotOrchestrator:
                 version="v2",
                 config=chat_config,
             )
-            print("events ready")
 
             yield f"data: {json.dumps(
                 {
@@ -123,7 +120,6 @@ class ChatbotOrchestrator:
             )
 
         async for chunk in events:
-            # print("iterating chunks")
             kind = chunk["event"]
 
             if kind == "on_chat_model_stream":

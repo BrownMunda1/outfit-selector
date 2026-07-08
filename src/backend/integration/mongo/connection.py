@@ -1,7 +1,9 @@
 from typing import Optional
 from threading import Lock
+import certifi
 
-from pymongo import AsyncMongoClient
+from pymongo import AsyncMongoClient, ASCENDING
+from pymongo.collation import Collation
 from pymongo.asynchronous.database import AsyncDatabase
 from pymongo.asynchronous.collection import AsyncCollection
 
@@ -29,6 +31,7 @@ class AsyncMongoConnection:
             self.client = AsyncMongoClient(
                 host=self.uri,
                 tls=True,
+                tlsCAFile=certifi.where(),
                 tlsAllowInvalidCertificates=False,
                 serverSelectionTimeoutMS=5000,
                 connectTimeoutMS=10000,
@@ -59,6 +62,7 @@ class AsyncMongoConnection:
                 if create:
                     try:
                         collection = await self.database.create_collection(name=collection_name)
+                        collection.create_index([("email", ASCENDING)], unique=True, collation=Collation(locale="en", strength=2))
                     except Exception as e:
                         collection = None
                         raise Exception(f"Unexpected error while creating collection '{collection_name}'") from e

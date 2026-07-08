@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router';
+import Spinner from '../../common/Spinner';
 import "./Register.css";
 
 function Register() {
@@ -13,63 +14,59 @@ function Register() {
     const [name, setName] = useState("");
     const [gender, setGender] = useState("");
     const [passwordVisible, setPasswordVisible] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
 
         e.preventDefault();
+        if (isSubmitting) return;
 
-        // Step 1: Register User
-        const registerApi = axios.create({
-            baseURL: import.meta.env.BACKEND_BASE_URL,
-            // withCredentials: true // use for cookie-based refresh
-        });
-        const userData = {
-            "username": username,
-            "password": password,
-            "gender": gender,
-            "name": name
+        setIsSubmitting(true);
+
+        try {
+            // Step 1: Register User
+            const registerApi = axios.create({
+                baseURL: import.meta.env.BACKEND_BASE_URL,
+                // withCredentials: true // use for cookie-based refresh
+            });
+            const userData = {
+                "username": username,
+                "password": password,
+                "gender": gender,
+                "name": name
+            }
+            await registerApi.post(
+                import.meta.env.BACKEND_AUTH_REGISTER_ENDPOINT,
+                userData
+            );
+
+            // Step 2: Authenticate the User
+            const authenticateApi = axios.create({
+                baseURL: import.meta.env.BACKEND_BASE_URL,
+                // withCredentials: true // use for cookie-based refresh
+            });
+            const formData = new FormData();
+            formData.append("username", username);
+            formData.append("password", password);
+            const response = await authenticateApi.post(
+                import.meta.env.BACKEND_AUTH_TOKEN_ENDPOINT,
+                formData
+            );
+
+            const data = response.data;
+            localStorage.setItem("access_token", data.access_token);
+
+            // redirect to page correctly
+            setTimeout(() => { // display something on screen for UX
+                navigate("/", { replace: true });
+            }, 1000);
+        } catch (error) {
+            throw new Error(error.message || "Registration failed"); // display something on screen for UX
+        } finally {
+            setIsSubmitting(false);
         }
-        await registerApi.post(
-            import.meta.env.BACKEND_AUTH_REGISTER_ENDPOINT,
-            userData
-        ).then( // successful registration
-            response => {
-                console.log("Successful Registration");
-            }
-        ).catch( // some error occurred
-            error => {
-                throw new Error(error.message); // display something on screen for UX
-            }
-        )
-
-        // Step 2: Authenticate the User
-        const authenticateApi = axios.create({
-            baseURL: import.meta.env.BACKEND_BASE_URL,
-            // withCredentials: true // use for cookie-based refresh
-        });
-        const formData = new FormData();
-        formData.append("username", username);
-        formData.append("password", password);
-        const res = await authenticateApi.post(
-            import.meta.env.BACKEND_AUTH_TOKEN_ENDPOINT,
-            formData
-        ).then(
-            response => {
-                const data = response.data;
-                localStorage.setItem("access_token", data.access_token);
-            }
-        ).catch(
-            error => {
-                throw new Error(error.message); // display something on screen for UX
-            }
-        );
-
-        // redirect to page correctly
-        setTimeout(() => { // display something on screen for UX
-            navigate("/", { replace: true });
-        }, 1000);
     };
 
     const redirectToLogin = (e) => {
@@ -142,9 +139,15 @@ function Register() {
 
                     <div id="msg" aria-live="polite" className="auth-message"></div>
 
-                    <button type="submit" className="auth-button" id="registerBtn" onClick={handleRegister}>
-                        <span>Create Account</span>
-                        <span className="button-icon">→</span>
+                    <button type="submit" className="auth-button" id="registerBtn" onClick={handleRegister} disabled={isSubmitting} aria-busy={isSubmitting}>
+                        {isSubmitting ? (
+                            <Spinner label="Creating account..." />
+                        ) : (
+                            <>
+                                <span>Create Account</span>
+                                <span className="button-icon">→</span>
+                            </>
+                        )}
                     </button>
                 </form>
 
