@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "outfit_selector": "./chatbot/graph.py:_global_graph"
+  },
+  "env": ".env"
+}
