@@ -35,8 +35,10 @@ async def upload_image_to_db(
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     try:
+        print(f"Processing {len(images)} for user: {user.get("username")}")
         image_processor = ImageProcessor()
         await image_processor.process_images(user=user, images=images)
+        print(f"Successfully Processed {len(images)} for user: {user.get("username")}")
 
         return JSONResponse(
             content=APIResponse(
@@ -63,18 +65,10 @@ async def chat(user: UserDependency, stream_request: ChatStreamRequest):
     """
     What does this do: Takes user message and passes it to LLM for response.
     """
-    print("here", user, stream_request.message)
     if not user:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     try:
-        # response = await chat_response(user_info=user, user_query=message)
-        # return JSONResponse(
-        #     content=APIResponse(
-        #         data=response
-        #     ).model_dump(by_alias=True),
-        #     status_code=200
-        # )
         chatbot = ChatbotOrchestrator(user_info=user)
         return EventSourceResponse(
             chatbot.invoke(

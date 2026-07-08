@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import Spinner from '../../common/Spinner';
 import "./Login.css";
 
 function Login() {
@@ -9,6 +10,7 @@ function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [passwordVisible, setPasswordVisible] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
@@ -16,32 +18,35 @@ function Login() {
     const handleSignIn = async (e) => {
 
         e.preventDefault();
+        if (isSubmitting) return;
 
-        const authenticateApi = axios.create({
-            baseURL: import.meta.env.BACKEND_BASE_URL,
-            // withCredentials: true // use for cookie-based refresh
-        });
-        const formData = new FormData();
-        formData.append("username", username);
-        formData.append("password", password);
-        const res = await authenticateApi.post(
-            import.meta.env.BACKEND_AUTH_TOKEN_ENDPOINT,
-            formData
-        ).then(
-            response => {
-                const data = response.data;
-                localStorage.setItem("access_token", data.access_token);
-            }
-        ).catch(
-            error => {
-                throw new Error(error.message); // display something on screen for UX
-            }
-        );
+        setIsSubmitting(true);
 
-        // redirect to page correctly
-        setTimeout(() => { // display something on screen for UX
-            navigate("/", { replace: true });
-        }, 1000);
+        try {
+            const authenticateApi = axios.create({
+                baseURL: import.meta.env.BACKEND_BASE_URL,
+                // withCredentials: true // use for cookie-based refresh
+            });
+            const formData = new FormData();
+            formData.append("username", username);
+            formData.append("password", password);
+            const response = await authenticateApi.post(
+                import.meta.env.BACKEND_AUTH_TOKEN_ENDPOINT,
+                formData
+            );
+
+            const data = response.data;
+            localStorage.setItem("access_token", data.access_token);
+
+            // redirect to page correctly
+            setTimeout(() => { // display something on screen for UX
+                navigate("/", { replace: true });
+            }, 1000);
+        } catch (error) {
+            throw new Error(error.message || "Sign in failed"); // display something on screen for UX
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     const redirectToRegister = (e) => {
@@ -91,9 +96,15 @@ function Login() {
 
                     <div id="msg" aria-live="polite" className="auth-message"></div>
 
-                    <button type="submit" className="auth-button" id="loginBtn" onClick={handleSignIn}>
-                        <span>Sign in</span>
-                        <span className="button-icon">→</span>
+                    <button type="submit" className="auth-button" id="loginBtn" onClick={handleSignIn} disabled={isSubmitting} aria-busy={isSubmitting}>
+                        {isSubmitting ? (
+                            <Spinner label="Signing in..." />
+                        ) : (
+                            <>
+                                <span>Sign in</span>
+                                <span className="button-icon">→</span>
+                            </>
+                        )}
                     </button>
                 </form>
 

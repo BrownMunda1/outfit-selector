@@ -17,7 +17,6 @@ class ChatbotGraph:
         graph.add_node(self.MODEL_NODE, self.model)
         graph.add_edge(START, self.MODEL_NODE)
         graph.add_edge(self.MODEL_NODE, END)
-        # print("here3")
         self.compiled_graph = graph.compile(checkpointer=_global_checkpointer)
 
     async def model(self, state: ChatState):
@@ -29,9 +28,7 @@ class ChatbotGraph:
 
 def get_graph() -> CompiledStateGraph:
     global _global_graph
-    # print("preparing graph")
     if _global_graph is None:
         graph_instance = ChatbotGraph()
         _global_graph = graph_instance.compiled_graph
-    print("graph ready")
     return _global_graph

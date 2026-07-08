@@ -1,0 +1,42 @@
+name: AWS Pipeline
+run-name: AWS Pipeline
+
+on:
+  workflow_dispatch:
+
+# env:
+#     IMAGE_PREFIX: ${{secrets.DOCKERHUB_USERNAME}}/outfit-selector
+
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+            python-version: "3.13"
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+            node-version: 24
+
+      - name: Create Virtual Environment and Install Backend Dependencies
+        working-directory: src/backend
+        run: |
+          python -m venv .venv
+          echo "Created Virtual Environment"
+          source .venv/bin/activate
+          echo "Activated Virtual Environment"
+          pip install -r requirements.txt
+
+      - name: Install Frontend Dependencies
+        working-directory: src/frontend
+        run: npm ci
+      
+      # DECIDE WHAT TO DO from here:
