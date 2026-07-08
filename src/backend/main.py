@@ -38,7 +38,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_credentials=True,
 )
-#### TODO: DESIGN ISSUE: There is no endpoint at "/"
 app.include_router(router=image_router)
 app.include_router(router=chat_router)
 app.include_router(router=auth_router)
@@ -46,6 +45,9 @@ app.include_router(router=auth_router)
 # Serve static files
 # app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
 
+@app.get("/")
+def healtcheck():
+    return { "status": "UP" }
 
 if __name__ == "__main__":
     uvicorn.run(
