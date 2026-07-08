@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 from pydantic.alias_generators import to_camel
 
-class ImageUpload(BaseModel): # TODO: Use something to automatically make an index in mongodb collection
+class ImageUpload(BaseModel):
 
     username: str = Field(
         description="The foreign key from the 'users' collection for identifying the users"
